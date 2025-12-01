@@ -1,0 +1,72 @@
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-md);
+  text-align: left;
+  gap: var(--space-md);
+  border: 1px solid var(--color-border-light);
+  position: relative;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.levelBadge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: var(--space-sm) 0;
+}
+
+.upgradeButton {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  padding: 0;
+  margin-top: var(--space-sm);
+  float: right;
+  transition: color var(--transition-fast);
+}
+
+.upgradeButton:disabled {
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.upgradeButton:hover:not(:disabled) {
+  color: var(--color-primary-hover);
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--space-md);
+  }
+
+  .value {
+    font-size: var(--font-size-2xl);
+  }
+}
+

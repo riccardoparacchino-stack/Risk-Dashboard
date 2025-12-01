@@ -1,0 +1,39 @@
+.container {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  pointer-events: none;
+}
+
+.toast {
+  background-color: var(--color-text-primary);
+  color: var(--color-surface);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  animation: toastSlideIn var(--transition-normal), toastFadeOut var(--transition-normal) 2.2s;
+  animation-fill-mode: both;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastFadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
