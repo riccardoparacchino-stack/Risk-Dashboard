@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useGameStore } from "../store";
+import DeployedCardsSection from "./DeployedCardsSection";
 import TabSwitch from "./TabSwitch";
 import CardItem from "./CardItem";
 import CardDetailModal from "./CardDetailModal";
 import UseCardsModal from "./UseCardsModal";
+import ThemeToggle from "./ThemeToggle";
 import styles from './DeckPage.module.css';
 
 export default function DeckPage({ onShowToast }) {
@@ -18,11 +20,16 @@ export default function DeckPage({ onShowToast }) {
     attackCards, 
     defenseCards, 
     ownedCards,
+    deployedCards,
     buyCard,
-    deployCards
+    deployCards,
+    removeDeployedCard
   } = useGameStore();
 
   const currentCards = activeTab === 'attack' ? attackCards : defenseCards;
+
+  // Carte possedute ma non ancora schierate
+  const availableCards = ownedCards.filter(id => !deployedCards.includes(id));
 
   const handleCardClick = (card) => {
     if (!ownedCards.includes(card.id)) {
@@ -45,7 +52,13 @@ export default function DeckPage({ onShowToast }) {
     setSelectedCard(null);
   };
 
-  // Gestione modale "Usa carte"
+  // Gestione rimozione carta schierata
+  const handleRemoveDeployedCard = (cardId) => {
+    removeDeployedCard(cardId);
+    onShowToast?.("Carta rimossa!");
+  };
+
+  // Gestione modale "Schiera carte"
   const handleOpenUseCards = () => {
     setSelectedCardsToUse([]);
     setShowUseCardsModal(true);
@@ -75,9 +88,22 @@ export default function DeckPage({ onShowToast }) {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Deck</h1>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Deck</h1>
+        <ThemeToggle />
+      </div>
       
-      <div className={styles.balanceCard}>
+      {/* Sezione Carte Schierate */}
+      <DeployedCardsSection
+        deployedCards={deployedCards}
+        attackCards={attackCards}
+        defenseCards={defenseCards}
+        onRemoveCard={handleRemoveDeployedCard}
+      />
+
+      {/* Sezione Mercato Carte */}
+      <div className={styles.marketSection}>
+        <h2 className={styles.sectionTitle}>Mercato Carte</h2>
         <TabSwitch activeTab={activeTab} onTabChange={setActiveTab} />
         
         <div className={styles.cardsGrid}>
@@ -93,11 +119,11 @@ export default function DeckPage({ onShowToast }) {
         </div>
       </div>
 
-      {/* Bottone sticky "Usa carte" */}
-      {ownedCards.length > 0 && (
+      {/* Bottone sticky "Schiera carte" - solo se ci sono carte disponibili */}
+      {availableCards.length > 0 && (
         <div className={styles.stickyButtonContainer}>
           <button className={styles.useCardsButton} onClick={handleOpenUseCards}>
-            Usa carte
+            Schiera carte
           </button>
         </div>
       )}
@@ -115,7 +141,7 @@ export default function DeckPage({ onShowToast }) {
         isOpen={showUseCardsModal}
         onClose={handleCloseUseCards}
         onConfirm={handleConfirmUseCards}
-        ownedCards={ownedCards}
+        ownedCards={availableCards}
         attackCards={attackCards}
         defenseCards={defenseCards}
         selectedCards={selectedCardsToUse}

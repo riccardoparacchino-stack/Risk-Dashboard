@@ -10,14 +10,20 @@
   margin: 0 auto;
   padding: var(--space-lg);
   width: 100%;
-  text-align: center;
   gap: var(--space-md);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
 }
 
 .pageTitle {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--space-xl);
+  margin: 0;
   color: var(--color-text-primary);
 }
 

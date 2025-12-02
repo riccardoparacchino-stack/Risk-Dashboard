@@ -51,17 +51,17 @@ export default function TurnCard({
 
       <div className={styles.actions}>
         <button 
+          className={styles.btnAlert}
+          onClick={onSkipTurn}
+        >
+          Fine turno
+        </button>
+        <button 
           className={styles.btnPrimary}
           onClick={handleAttack}
           disabled={attacksLeft <= 0}
         >
           Attacca
-        </button>
-        <button 
-          className={styles.btnSecondary}
-          onClick={onSkipTurn}
-        >
-          Salta turno
         </button>
       </div>
     </div>

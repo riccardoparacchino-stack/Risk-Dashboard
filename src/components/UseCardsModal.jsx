@@ -46,7 +46,7 @@ export default function UseCardsModal({
         <h2 className={styles.title}>Seleziona le carte che vuoi schierare</h2>
         
         {ownedCardDetails.length === 0 ? (
-          <p className={styles.emptyMessage}>Non hai carte da schierare. Acquista carte dallo shop!</p>
+          <p className={styles.emptyMessage}>Non hai carte disponibili da schierare. Acquista nuove carte dal Mercato!</p>
         ) : (
           <div className={styles.cardList}>
             {ownedCardDetails.map((card) => (

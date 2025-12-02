@@ -8,6 +8,8 @@ import DeckPage from "./components/DeckPage";
 import BottomNavigation from "./components/BottomNavigation";
 import Toast from "./components/Toast";
 import UpgradeModal from "./components/UpgradeModal";
+import ConfirmModal from "./components/ConfirmModal";
+import ThemeToggle from "./components/ThemeToggle";
 import styles from "./App.module.css";
 
 export default function App() {
@@ -16,6 +18,7 @@ export default function App() {
   const [showToast, setShowToast] = useState(false);
   const [triggerConfetti, setTriggerConfetti] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showEndTurnModal, setShowEndTurnModal] = useState(false);
   
   const {
     petrodollari,
@@ -76,6 +79,19 @@ export default function App() {
     setShowUpgradeModal(false);
   };
 
+  const handleEndTurnClick = () => {
+    setShowEndTurnModal(true);
+  };
+
+  const handleCloseEndTurnModal = () => {
+    setShowEndTurnModal(false);
+  };
+
+  const handleConfirmEndTurn = () => {
+    skipTurn();
+    setShowEndTurnModal(false);
+  };
+
   const upgradeCost = economyLevel * 50;
   const newIncomePerTurn = incomePerTurn + 10;
 
@@ -100,7 +116,10 @@ export default function App() {
     return (
       <div className={styles.app}>
         <div className={styles.container}>
-          <h1 className={styles.pageTitle}>Statistiche</h1>
+          <div className={styles.header}>
+            <h1 className={styles.pageTitle}>Statistiche</h1>
+            <ThemeToggle />
+          </div>
           <p>Funzionalità statistiche in sviluppo...</p>
           <button onClick={() => setCurrentView("dashboard")}>
             Torna al Dashboard
@@ -117,7 +136,10 @@ export default function App() {
   return (
     <div className={styles.app}>
       <div className={styles.container}>
-        <h1 className={styles.pageTitle}>Dashboard</h1>
+        <div className={styles.header}>
+          <h1 className={styles.pageTitle}>Dashboard</h1>
+          <ThemeToggle />
+        </div>
         
         <div className={styles.topCards}>
           <PetrodollariCard 
@@ -137,7 +159,7 @@ export default function App() {
           attacksUsed={attacksUsed}
           attacksLeft={attacksLeft}
           onAttack={handleAttack}
-          onSkipTurn={skipTurn}
+          onSkipTurn={handleEndTurnClick}
           shouldTriggerConfetti={triggerConfetti}
         />
 
@@ -166,6 +188,13 @@ export default function App() {
         upgradeCost={upgradeCost}
         newIncomePerTurn={newIncomePerTurn}
         currentIncomePerTurn={incomePerTurn}
+      />
+
+      <ConfirmModal
+        isOpen={showEndTurnModal}
+        onClose={handleCloseEndTurnModal}
+        onConfirm={handleConfirmEndTurn}
+        title="Sei sicuro di voler passare il turno?"
       />
     </div>
   );

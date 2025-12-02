@@ -5,6 +5,7 @@
   margin-bottom: var(--space-md);
   text-align: center;
   display: flex;
+  gap: var(--space-sm);
   flex-direction: column;
   border: 1px solid var(--color-border-light);
 }
@@ -24,6 +25,8 @@
   display: flex;
   gap: var(--space-md);
   justify-content: center;
+  margin-bottom: var(--space-md);
+  margin-top: var(--space-sm);
 }
 
 .attackIcon {
@@ -36,8 +39,7 @@
   font-size: var(--font-size-xl);
   background-color: var(--color-border);
   transition: background-color var(--transition-fast);
-  margin-bottom: var(--space-md);
-  margin-top: var(--space-md);
+
 }
 
 .attackIcon.used {
@@ -50,7 +52,7 @@
 
 .actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: var(--space-md);
 }
 
@@ -64,6 +66,7 @@
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: background-color var(--transition-fast);
+  flex: 1;
 }
 
 .btnPrimary:hover:not(:disabled) {
@@ -89,6 +92,23 @@
 
 .btnSecondary:hover {
   background-color: var(--color-disabled);
+}
+
+.btnAlert {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 14px var(--space-lg);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  flex: 1;
+}
+
+.btnAlert:hover {
+  background-color: #fecaca;
 }
 
 @media (max-width: 480px) {

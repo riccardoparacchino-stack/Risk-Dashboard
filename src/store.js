@@ -170,6 +170,14 @@ export const useGameStore = create((set, get) => ({
       deployedCards: [...state.deployedCards, ...cardIds],
     })),
   
+  // Rimuovi carta schierata (elimina definitivamente)
+  removeDeployedCard: (cardId) =>
+    set((state) => ({
+      deployedCards: state.deployedCards.filter(id => id !== cardId),
+      ownedCards: state.ownedCards.filter(id => id !== cardId),
+      deck: state.deck.filter(card => card.id !== cardId),
+    })),
+  
   // Resetta carte schierate (chiamare a fine turno)
   resetDeployedCards: () =>
     set(() => ({

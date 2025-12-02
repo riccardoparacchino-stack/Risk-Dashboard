@@ -1,13 +1,22 @@
+import { useGameStore } from '../store';
 import styles from './DeckSummaryCard.module.css';
 
-export default function DeckSummaryCard({ deck, onGoToDeck }) {
-  const attackCount = deck.filter(card => card.type === 'attack').length;
-  const defenseCount = deck.filter(card => card.type === 'defense').length;
+export default function DeckSummaryCard({ onGoToDeck }) {
+  const { deployedCards, attackCards, defenseCards } = useGameStore();
+
+  // Conta carte schierate per tipo
+  const attackCount = deployedCards.filter(cardId => 
+    attackCards.some(c => c.id === cardId)
+  ).length;
+  
+  const defenseCount = deployedCards.filter(cardId => 
+    defenseCards.some(c => c.id === cardId)
+  ).length;
 
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Il tuo deck</h3>
+        <h3 className={styles.title}>Carte schierate</h3>
         <button className={styles.button} onClick={onGoToDeck}>
           Vai al deck
         </button>
