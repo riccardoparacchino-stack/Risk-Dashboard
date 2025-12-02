@@ -47,6 +47,9 @@ export const useGameStore = create((set, get) => ({
   // Deck attivo (carte nel deck del giocatore)
   deck: [],
   
+  // Carte schierate nel turno corrente
+  deployedCards: [],
+  
   // Funzioni economia
   addPetrodollari: (value) => 
     set((state) => ({ petrodollari: state.petrodollari + value })),
@@ -160,4 +163,16 @@ export const useGameStore = create((set, get) => ({
     const card = catalog.find(c => c.id === cardId);
     return card ? state.petrodollari >= card.cost : false;
   },
+  
+  // Schiera carte selezionate
+  deployCards: (cardIds) =>
+    set((state) => ({
+      deployedCards: [...state.deployedCards, ...cardIds],
+    })),
+  
+  // Resetta carte schierate (chiamare a fine turno)
+  resetDeployedCards: () =>
+    set(() => ({
+      deployedCards: [],
+    })),
 }));
