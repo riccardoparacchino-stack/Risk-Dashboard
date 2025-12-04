@@ -110,6 +110,7 @@ export const useGameStore = create((set, get) => ({
         attacksUsed: 0,
         currentTurn: state.currentTurn + 1,
         petrodollari: newPetrodollari,
+        deployedCards: [], // Reset carte schierate a fine turno
       };
     }),
   
@@ -122,6 +123,7 @@ export const useGameStore = create((set, get) => ({
         attacksLeft: 3,
         attacksUsed: 0,
         petrodollari: newPetrodollari,
+        deployedCards: [], // Reset carte schierate a fine turno
       };
     }),
   
@@ -170,12 +172,10 @@ export const useGameStore = create((set, get) => ({
       deployedCards: [...state.deployedCards, ...cardIds],
     })),
   
-  // Rimuovi carta schierata (elimina definitivamente)
-  removeDeployedCard: (cardId) =>
+  // Ritira carta dal campo (rimane nell'inventario)
+  undeployCard: (cardId) =>
     set((state) => ({
       deployedCards: state.deployedCards.filter(id => id !== cardId),
-      ownedCards: state.ownedCards.filter(id => id !== cardId),
-      deck: state.deck.filter(card => card.id !== cardId),
     })),
   
   // Resetta carte schierate (chiamare a fine turno)

@@ -23,7 +23,7 @@ export default function DeckPage({ onShowToast }) {
     deployedCards,
     buyCard,
     deployCards,
-    removeDeployedCard
+    undeployCard
   } = useGameStore();
 
   const currentCards = activeTab === 'attack' ? attackCards : defenseCards;
@@ -52,10 +52,10 @@ export default function DeckPage({ onShowToast }) {
     setSelectedCard(null);
   };
 
-  // Gestione rimozione carta schierata
-  const handleRemoveDeployedCard = (cardId) => {
-    removeDeployedCard(cardId);
-    onShowToast?.("Carta rimossa!");
+  // Gestione ritiro carta schierata (torna nell'inventario)
+  const handleUndeployCard = (cardId) => {
+    undeployCard(cardId);
+    onShowToast?.("Carta ritirata!");
   };
 
   // Gestione modale "Schiera carte"
@@ -98,7 +98,7 @@ export default function DeckPage({ onShowToast }) {
         deployedCards={deployedCards}
         attackCards={attackCards}
         defenseCards={defenseCards}
-        onRemoveCard={handleRemoveDeployedCard}
+        onRemoveCard={handleUndeployCard}
       />
 
       {/* Sezione Mercato Carte */}
