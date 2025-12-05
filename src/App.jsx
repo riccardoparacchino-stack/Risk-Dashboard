@@ -10,6 +10,9 @@ import Toast from "./components/Toast";
 import UpgradeModal from "./components/UpgradeModal";
 import ConfirmModal from "./components/ConfirmModal";
 import ThemeToggle from "./components/ThemeToggle";
+import PlayerNameModal from "./components/PlayerNameModal";
+import Leaderboard from "./components/Leaderboard";
+import SaveLoadModal from "./components/SaveLoadModal";
 import styles from "./App.module.css";
 
 export default function App() {
@@ -19,6 +22,7 @@ export default function App() {
   const [triggerConfetti, setTriggerConfetti] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showEndTurnModal, setShowEndTurnModal] = useState(false);
+  const [showSaveLoadModal, setShowSaveLoadModal] = useState(false);
   
   const {
     petrodollari,
@@ -33,6 +37,9 @@ export default function App() {
     addPetrodollari,
     skipTurn,
     deck,
+    playerName,
+    setPlayerName,
+    saveToLeaderboard,
   } = useGameStore();
 
   const handleAttack = (reward) => {
@@ -87,9 +94,16 @@ export default function App() {
     setShowEndTurnModal(false);
   };
 
-  const handleConfirmEndTurn = () => {
+  const handleConfirmEndTurn = async () => {
     skipTurn();
     setShowEndTurnModal(false);
+    // Salva punteggio su Supabase
+    if (playerName) {
+      const { error } = await saveToLeaderboard(playerName);
+      if (error) {
+        console.error("Errore salvataggio punteggio:", error);
+      }
+    }
   };
 
   const upgradeCost = economyLevel * 50;
@@ -117,17 +131,19 @@ export default function App() {
       <div className={styles.app}>
         <div className={styles.container}>
           <div className={styles.header}>
-            <h1 className={styles.pageTitle}>Statistiche</h1>
+            <h1 className={styles.pageTitle}>Leaderboard</h1>
             <ThemeToggle />
           </div>
-          <p>Funzionalità statistiche in sviluppo...</p>
-          <button onClick={() => setCurrentView("dashboard")}>
-            Torna al Dashboard
-          </button>
+          <Leaderboard />
         </div>
         <BottomNavigation 
           currentView={currentView} 
           onNavigate={handleNavigate} 
+        />
+        <Toast
+          message={toastMessage}
+          isVisible={showToast}
+          onClose={handleCloseToast}
         />
       </div>
     );
@@ -138,7 +154,16 @@ export default function App() {
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.pageTitle}>Dashboard</h1>
-          <ThemeToggle />
+          <div className={styles.headerActions}>
+            <button 
+              className={styles.saveBtn}
+              onClick={() => setShowSaveLoadModal(true)}
+              title="Salva/Carica"
+            >
+              💾
+            </button>
+            <ThemeToggle />
+          </div>
         </div>
         
         <div className={styles.topCards}>
@@ -195,6 +220,17 @@ export default function App() {
         onClose={handleCloseEndTurnModal}
         onConfirm={handleConfirmEndTurn}
         title="Sei sicuro di voler passare il turno?"
+      />
+
+      <SaveLoadModal
+        isOpen={showSaveLoadModal}
+        onClose={() => setShowSaveLoadModal(false)}
+        onShowToast={handleShowToast}
+      />
+
+      <PlayerNameModal
+        isOpen={!playerName}
+        onConfirm={setPlayerName}
       />
     </div>
   );

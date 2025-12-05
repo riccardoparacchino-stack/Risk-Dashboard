@@ -7,6 +7,7 @@
   flex-direction: column;
   gap: var(--space-sm);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
 }
 
 .card:hover {
@@ -15,8 +16,8 @@
 }
 
 .card.owned {
-  opacity: 0.7;
-  background: var(--color-border);
+  border-color: var(--color-success);
+  background: var(--color-surface);
 }
 
 .name {
@@ -47,35 +48,20 @@
   color: var(--color-primary);
 }
 
-.buyButton {
-  width: 40px;
-  height: 40px;
+.status {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: none;
   background-color: #e0e7ff;
   color: var(--color-primary);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-bold);
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-fast);
 }
 
-.buyButton:hover:not(.disabled) {
-  background-color: var(--color-primary);
-  color: white;
-  transform: scale(1.1);
-}
-
-.buyButton.disabled {
-  background-color: var(--color-border);
-  color: var(--color-text-muted);
-  cursor: not-allowed;
-}
-
-.card.owned .buyButton {
+.card.owned .status {
   background-color: var(--color-success);
   color: white;
 }

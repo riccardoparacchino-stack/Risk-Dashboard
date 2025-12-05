@@ -32,17 +32,22 @@ export default function DeckPage({ onShowToast }) {
   const availableCards = ownedCards.filter(id => !deployedCards.includes(id));
 
   const handleCardClick = (card) => {
-    if (!ownedCards.includes(card.id)) {
-      setSelectedCard(card);
-      setShowModal(true);
+    setSelectedCard(card);
+    setShowModal(true);
+  };
+
+  const handleBuyCard = () => {
+    if (selectedCard) {
+      buyCard(selectedCard.id, activeTab);
+      onShowToast?.(`${selectedCard.name} acquistata!`);
     }
   };
 
-  const handleConfirmPurchase = () => {
+  const handleDeployFromModal = () => {
     if (selectedCard) {
-      buyCard(selectedCard.id, activeTab);
+      deployCards([selectedCard.id]);
       setShowModal(false);
-      onShowToast?.(`${selectedCard.name} acquistata!`);
+      onShowToast?.(`${selectedCard.name} schierata!`);
       setSelectedCard(null);
     }
   };
@@ -103,7 +108,6 @@ export default function DeckPage({ onShowToast }) {
 
       {/* Sezione Mercato Carte */}
       <div className={styles.marketSection}>
-        <h2 className={styles.sectionTitle}>Mercato Carte</h2>
         <TabSwitch activeTab={activeTab} onTabChange={setActiveTab} />
         
         <div className={styles.cardsGrid}>
@@ -113,7 +117,7 @@ export default function DeckPage({ onShowToast }) {
               card={card}
               isOwned={ownedCards.includes(card.id)}
               canAfford={petrodollari >= card.cost}
-              onBuy={handleCardClick}
+              onClick={handleCardClick}
             />
           ))}
         </div>
@@ -131,10 +135,13 @@ export default function DeckPage({ onShowToast }) {
       <CardDetailModal
         isOpen={showModal}
         onClose={handleCloseModal}
-        onConfirm={handleConfirmPurchase}
+        onBuy={handleBuyCard}
+        onDeploy={handleDeployFromModal}
         card={selectedCard}
         cardType={activeTab}
         canAfford={selectedCard ? petrodollari >= selectedCard.cost : false}
+        isOwned={selectedCard ? ownedCards.includes(selectedCard.id) : false}
+        isDeployed={selectedCard ? deployedCards.includes(selectedCard.id) : false}
       />
 
       <UseCardsModal

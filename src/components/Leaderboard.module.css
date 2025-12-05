@@ -1,0 +1,141 @@
+.container {
+  padding: var(--space-md);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.refreshBtn {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.refreshBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.refreshBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  background-color: var(--color-danger-bg, #fee2e2);
+  color: var(--color-danger, #dc2626);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+.loading,
+.empty {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: var(--space-xl);
+  font-size: var(--font-size-md);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.table th,
+.table td {
+  padding: var(--space-md);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th {
+  background-color: var(--color-background);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table tbody tr:hover {
+  background-color: var(--color-background);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.topThree {
+  background-color: var(--color-primary-light, rgba(59, 130, 246, 0.05));
+}
+
+.rank {
+  font-weight: var(--font-weight-bold);
+  text-align: center;
+  width: 40px;
+}
+
+.gold {
+  color: #fbbf24;
+  font-size: var(--font-size-lg);
+}
+
+.silver {
+  color: #9ca3af;
+  font-size: var(--font-size-lg);
+}
+
+.bronze {
+  color: #d97706;
+  font-size: var(--font-size-lg);
+}
+
+.playerName {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.petrodollari {
+  color: var(--color-success, #10b981);
+  font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 480px) {
+  .table th,
+  .table td {
+    padding: var(--space-sm);
+    font-size: var(--font-size-xs);
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: var(--space-sm);
+    align-items: flex-start;
+  }
+}

@@ -1,30 +1,35 @@
 import { create } from "zustand";
+import { saveScore, saveGame, loadGame, updateGame } from "./supabaseClient";
 
 // Catalogo carte di attacco (ordinate per prezzo)
 const ATTACK_CARDS = [
-  { id: "attacco-missilistico", name: "🚀 Attacco Missilistico", cost: 150, description: "3 dadi attacco, nessuna truppa" },
-  { id: "assalto-lampo", name: "⚡ Assalto Lampo", cost: 180, description: "+1 attacco oltre il limite" },
-  { id: "kamikaze", name: "💥 Kamikaze", cost: 200, description: "Attacca non adiacente con 1 truppa" },
-  { id: "egemonia-aerea", name: "✈️ Egemonia Aerea", cost: 250, description: "Raddoppia i dadi di attacco" },
-  { id: "paracadutisti", name: "🪂 Paracadutisti", cost: 250, description: "Attacca non adiacente con 1-5 truppe" },
-  { id: "drang-nach-osten", name: "🗡️ Drang Nach Osten", cost: 300, description: "Attacco gratuito dopo conquista" },
-  { id: "sabotaggio", name: "🔧 Sabotaggio", cost: 400, description: "Blocca 1 nemico per 1 turno, cooldown 3" },
-  { id: "bomba-atomica", name: "☢️ Bomba Atomica", cost: 2000, description: "Attacco pesante, disponibile dal turno 5, cooldown 3" },
+  { id: "attacco-missilistico", name: "🚀 Attacco Missilistico", cost: 150, description: "3 dadi attacco, nessuna truppa", image: "/cards/attacco-missilistico.jpg" },
+  { id: "assalto-lampo", name: "⚡ Assalto Lampo", cost: 180, description: "+1 attacco oltre il limite", image: "/cards/assalto-lampo.jpg" },
+  { id: "kamikaze", name: "💥 Kamikaze", cost: 200, description: "Attacca non adiacente con 1 truppa", image: "/cards/kamikaze.jpg" },
+  { id: "egemonia-aerea", name: "✈️ Egemonia Aerea", cost: 250, description: "Raddoppia i dadi di attacco", image: "/cards/egemonia-aerea.jpg" },
+  { id: "paracadutisti", name: "🪂 Paracadutisti", cost: 250, description: "Attacca non adiacente con 1-5 truppe", image: "/cards/paracadutisti.jpg" },
+  { id: "drang-nach-osten", name: "🗡️ Drang Nach Osten", cost: 300, description: "Attacco gratuito dopo conquista", image: "/cards/drang-nach-osten.jpg" },
+  { id: "sabotaggio", name: "🔧 Sabotaggio", cost: 400, description: "Blocca 1 nemico per 1 turno, cooldown 3", image: "/cards/sabotaggio.jpg" },
+  { id: "bomba-atomica", name: "☢️ Bomba Atomica", cost: 2000, description: "Attacco pesante, disponibile dal turno 5, cooldown 3", image: "/cards/bomba-atomica.jpg" },
 ];
 
 // Catalogo carte di difesa (ordinate per prezzo)
 const DEFENSE_CARDS = [
-  { id: "bunker", name: "🏰 Bunker", cost: 80, description: "x1.5 dadi difesa, max 3 per territorio" },
-  { id: "mimetizzazione", name: "🌿 Mimetizzazione", cost: 120, description: "Il primo attacco di questo turno è annullato" },
-  { id: "antiaerea", name: "🎯 Antiaerea", cost: 150, description: "Protegge 3 stati da attacchi aerei" },
-  { id: "linea-del-piave", name: "🏔️ Linea del Piave", cost: 160, description: "Mantieni 1 truppa anche se sconfitto" },
-  { id: "contromisure", name: "🛡️ Contromisure", cost: 200, description: "+1 dado di difesa" },
-  { id: "resistenza", name: "💪 Resistenza", cost: 300, description: "Aggiungi 5 truppe a uno stato" },
-  { id: "blocca-stato", name: "🔒 Blocca Stato", cost: 300, description: "Territorio invulnerabile per 1 turno" },
-  { id: "iron-dome", name: "🛸 Iron Dome", cost: 800, description: "Blocca 1 territorio (800$) o continente (1500$)" },
+  { id: "bunker", name: "🏰 Bunker", cost: 80, description: "x1.5 dadi difesa, max 3 per territorio", image: "/cards/bunker.jpg" },
+  { id: "mimetizzazione", name: "🌿 Mimetizzazione", cost: 120, description: "Il primo attacco di questo turno è annullato", image: "/cards/mimetizzazione.jpg" },
+  { id: "antiaerea", name: "🎯 Antiaerea", cost: 150, description: "Protegge 3 stati da attacchi aerei", image: "/cards/antiaerea.jpg" },
+  { id: "linea-del-piave", name: "🏔️ Linea del Piave", cost: 160, description: "Mantieni 1 truppa anche se sconfitto", image: "/cards/linea-del-piave.jpg" },
+  { id: "contromisure", name: "🛡️ Contromisure", cost: 200, description: "+1 dado di difesa", image: "/cards/contromisure.jpg" },
+  { id: "resistenza", name: "💪 Resistenza", cost: 300, description: "Aggiungi 5 truppe a uno stato", image: "/cards/resistenza.jpg" },
+  { id: "blocca-stato", name: "🔒 Blocca Stato", cost: 300, description: "Territorio invulnerabile per 1 turno", image: "/cards/blocca-stato.jpg" },
+  { id: "iron-dome", name: "🛸 Iron Dome", cost: 800, description: "Blocca 1 territorio (800$) o continente (1500$)", image: "/cards/iron-dome.jpg" },
 ];
 
 export const useGameStore = create((set, get) => ({
+  // Giocatore
+  playerName: null,
+  setPlayerName: (name) => set({ playerName: name }),
+  
   // Valuta e economia
   petrodollari: 20,
   economyLevel: 1,
@@ -183,4 +188,67 @@ export const useGameStore = create((set, get) => ({
     set(() => ({
       deployedCards: [],
     })),
+
+  // ============ SUPABASE PERSISTENCE ============
+  
+  // Esporta lo stato corrente (per salvare su Supabase)
+  getGameState: () => {
+    const state = get();
+    return {
+      petrodollari: state.petrodollari,
+      economyLevel: state.economyLevel,
+      incomePerTurn: state.incomePerTurn,
+      growthPercentage: state.growthPercentage,
+      previousTurnPetrodollari: state.previousTurnPetrodollari,
+      currentTurn: state.currentTurn,
+      attacksLeft: state.attacksLeft,
+      attacksUsed: state.attacksUsed,
+      ownedCards: state.ownedCards,
+      deck: state.deck,
+      deployedCards: state.deployedCards,
+    };
+  },
+
+  // Carica stato da Supabase
+  loadGameState: (savedState) =>
+    set(() => ({
+      petrodollari: savedState.petrodollari,
+      economyLevel: savedState.economyLevel,
+      incomePerTurn: savedState.incomePerTurn,
+      growthPercentage: savedState.growthPercentage,
+      previousTurnPetrodollari: savedState.previousTurnPetrodollari,
+      currentTurn: savedState.currentTurn,
+      attacksLeft: savedState.attacksLeft,
+      attacksUsed: savedState.attacksUsed,
+      ownedCards: savedState.ownedCards,
+      deck: savedState.deck,
+      deployedCards: savedState.deployedCards,
+    })),
+
+  // Salva punteggio nella leaderboard
+  saveToLeaderboard: async (playerName) => {
+    const gameState = get().getGameState();
+    return await saveScore(playerName, gameState);
+  },
+
+  // Salva partita su Supabase
+  saveGameToCloud: async (saveName) => {
+    const gameState = get().getGameState();
+    return await saveGame(saveName, gameState);
+  },
+
+  // Carica partita da Supabase
+  loadGameFromCloud: async (gameId) => {
+    const { data, error } = await loadGame(gameId);
+    if (data && !error) {
+      get().loadGameState(data.game_state);
+    }
+    return { data, error };
+  },
+
+  // Aggiorna partita esistente su Supabase
+  updateGameInCloud: async (gameId) => {
+    const gameState = get().getGameState();
+    return await updateGame(gameId, gameState);
+  },
 }));
